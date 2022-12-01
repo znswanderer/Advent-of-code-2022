@@ -1,9 +1,15 @@
-How to build:
+https://adventofcode.com/2022/day/1
 
-cabal build 
+# How to build:
 
-How to run:
+> cabal build 
 
-cabal run day1 -- example 
-or
-cabal run day1 -- input
+# How to run:
+
+> cabal run day1 -- "--max" input
+For part 1 of the day 1 challenge
+
+> cabal run day1 -- "--top3" input
+For part 2 of the day 1 challenge
+
+
