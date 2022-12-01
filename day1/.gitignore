@@ -1,0 +1,10 @@
+
+dist-newstyle/build/x86_64-osx/ghc-9.2.5/day1-0.1.0.0/build/libHSday1-0.1.0.0-inplace-ghc9.2.5.dylib
+*.dylib
+*.a
+*.dyn_hi
+*.dyn_o
+*.hi
+*.o
+*.hi
+*.o
