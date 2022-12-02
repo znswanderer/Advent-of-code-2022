@@ -1,13 +1,17 @@
 module Main where
 
 import System.Environment
-import qualified MyLib (someFunc, getScore)
+import qualified MyLib (someFunc, getScore, getScorePart2)
 
 
 main :: IO ()
 main = getArgs >>= parse 
 
-parse [path] = do
+parse ["--part1", path] = do
   input <- readFile path
   putStrLn $ show $ MyLib.getScore input
 
+
+parse ["--part2", path] = do
+  input <- readFile path
+  putStrLn $ show $ MyLib.getScorePart2 input
