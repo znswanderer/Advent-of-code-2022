@@ -1,7 +1,7 @@
 module Main where
 
 import System.Environment
-import qualified MyLib (someFunc, getScore, getScorePart2)
+import qualified MyLib (getScore, getScorePart2)
 
 
 main :: IO ()

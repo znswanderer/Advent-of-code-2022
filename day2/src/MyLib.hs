@@ -1,4 +1,4 @@
-module MyLib (someFunc, getScore, getScorePart2) where
+module MyLib (getScore, getScorePart2) where
 
 data Hand = Rock | Paper | Scissors
     deriving (Eq, Show)
@@ -13,30 +13,39 @@ data Target = Target Hand MatchResult
     deriving (Eq, Show)
 
 
-someFunc :: IO ()
-someFunc = do 
-    -- putStrLn testInput
-    let matches = readMatches testInput
-    putStrLn $ show $ matches
-    putStrLn $ show $ map matchResult $ matches
-    let scores = map matchScore matches
-    putStrLn $ show scores
-    putStrLn $ show $ sum scores
+readMatches :: String -> [Match]
+readMatches  = map getMatch . lines
+  where
+    otherHand line = getHand (line !! 0)
+    myHand    line = getHand (line !! 2)
+    getMatch  line = Match (otherHand line) (myHand line)
+
+
+readTargets :: String -> [Target]
+readTargets  = map getTarget . lines
+  where
+    otherHand line = getHand (line !! 0)
+    result    line = case (line !! 2) of
+                        'X' -> Loose
+                        'Y' -> Tie
+                        'Z' -> Win
+    getTarget line = Target (otherHand line) (result line)
+
 
 getScore :: String -> Int
-getScore input = 
-    sum scores
-  where
-    matches = readMatches input
-    scores = map matchScore matches
+getScore = sumScores . readMatches 
 
 getScorePart2 :: String -> Int
-getScorePart2 input = 
-    sum scores
+getScorePart2 = sumScores . map target2Match . readTargets
+
+sumScores :: [Match] -> Int
+sumScores = sum . map matchScore
+
+matchScore :: Match -> Int
+matchScore m@(Match _ myHand) = 
+    (resultScore result) + (handScore myHand)
   where
-    scores = map matchScore matches
-    matches = map target2Match targets
-    targets = readTargets input
+    result = matchResult m
 
 
 -- Maybe better with a Map?
@@ -58,17 +67,14 @@ score2Hand 1 = Rock
 score2Hand 2 = Paper
 score2Hand 3 = Scissors
 
+resultScore :: MatchResult -> Int
+resultScore Win   = 6
+resultScore Tie   = 3
+resultScore Loose = 0
+
 
 {-
 Rock defeats Scissors, Scissors defeats Paper, and Paper defeats Rock.
-
-Scissors defeats Paper: 3 - 2 = 1
-Paper defeats Rock: 2 - 1 = 1
-Rock defeats Scissors: 1 - 3 = -2
-Paper vs Scissors: 2 - 3 = -1
-Rock vs Paper: 1 - 2 = -1
-Scissors vs Rock: 3 - 1 = 2
-
 This is like a distance vector in periodic boundary conditions.
 
 x_a - x_b
@@ -85,34 +91,11 @@ S beats P
 R beats S
           S<---R
 
-python:
->>> (1 - 3) % 3
-1
->>> (2 - 1) % 3
-1
->>> (3 - 2) % 3
-1
->>> (1 - 2) % 3
-2
->>> (2 - 3) % 3
-2
->>> (3 - 1) % 3
-2
-
+case (x_a - x_b)  `mod` 3 of
+    1 -> Loose
+    2 -> Win
+    0 -> Tie
 -}
-
-
-resultScore :: MatchResult -> Int
-resultScore Win   = 6
-resultScore Tie   = 3
-resultScore Loose = 0
-
-
-matchScore :: Match -> Int
-matchScore m@(Match _ myHand) = 
-    (resultScore result) + (handScore myHand)
-  where
-    result = matchResult m
 
 matchResult :: Match -> MatchResult
 matchResult (Match h1 h2) =
@@ -126,27 +109,6 @@ matchResult (Match h1 h2) =
             1 -> Loose
             2 -> Win
             0 -> Tie
-
-readMatches :: String -> [Match]
-readMatches input = 
-    map getMatch $ lines input
-  where
-    otherHand line = getHand (line !! 0)
-    myHand    line = getHand (line !! 2)
-    getMatch  line = Match (otherHand line) (myHand line)
-
--- PART 2
-
-readTargets :: String -> [Target]
-readTargets input =
-    map getTarget $ lines input
-  where
-    otherHand line = getHand (line !! 0)
-    result    line = case (line !! 2) of
-                        'X' -> Loose
-                        'Y' -> Tie
-                        'Z' -> Win
-    getTarget line = Target (otherHand line) (result line)
 
 target2Match :: Target -> Match
 target2Match (Target otherHand matchResult) =
