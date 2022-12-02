@@ -102,8 +102,6 @@ python:
 -}
 
 
-
-
 resultScore :: MatchResult -> Int
 resultScore Win   = 6
 resultScore Tie   = 3
@@ -150,9 +148,6 @@ readTargets input =
                         'Z' -> Win
     getTarget line = Target (otherHand line) (result line)
 
--- handForTarget :: Target -> Hand
--- handForTarget (Target h mr) = handForResult mr h 
-
 target2Match :: Target -> Match
 target2Match (Target otherHand matchResult) =
     Match otherHand (handForResult matchResult otherHand)
@@ -161,10 +156,6 @@ target2Match (Target otherHand matchResult) =
     handForResult Tie   h = h
     handForResult Loose h = score2Hand $ (((handScore h) - 2) `mod` 3) + 1
     handForResult Win   h = score2Hand $ ((handScore h) `mod` 3) + 1
-
-
--- target2Match :: Target -> Match
--- target2Match t = 
 
 
 testInput = "A Y\n\
