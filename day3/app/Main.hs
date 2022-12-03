@@ -1,7 +1,7 @@
 module Main where
 
 import System.Environment
-import qualified MyLib (prioSum)
+import qualified MyLib (prioSum, prioSum2)
 
 
 main :: IO ()
@@ -11,9 +11,6 @@ parse ["--part1", path] = do
   input <- readFile path
   putStrLn $ show $ MyLib.prioSum input
 
-
-{-
 parse ["--part2", path] = do
   input <- readFile path
-  putStrLn $ show $ MyLib.getScorePart2 input
--}
+  putStrLn $ show $ MyLib.prioSum2 input
