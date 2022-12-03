@@ -29,10 +29,10 @@ prioSum = sum . map priority . map findCommon . lines
 
 --- part 2
 
-findCommonInRucksacks :: [Set Char] -> Char
-findCommonInRucksacks rs = elemAt 0 $ foldr Set.intersection (rs !! 0) (drop 1 rs)
-
 type Badge = Char
+
+findCommonInRucksacks :: [Set Char] -> Badge
+findCommonInRucksacks rs = elemAt 0 $ foldr Set.intersection (rs !! 0) (drop 1 rs)
 
 badges :: String -> [Badge]
 badges = map findCommonInRucksacks . chunksOf 3 . map Set.fromList . lines
