@@ -8,6 +8,8 @@ import Text.Parsec (parse, ParseError, eof)
 import Data.Set (Set, intersection, isSubsetOf)
 import qualified Data.Set as Set
 
+import System.IO.Unsafe (unsafePerformIO)
+
 {-
 
 OK, it's probably a bit over the top at the moment, but I'm going to start 
@@ -18,12 +20,9 @@ simple.
 
 -}
 
-testInput = "2-4,6-8\n\
-\2-3,4-5\n\
-\5-7,7-9\n\
-\2-8,3-7\n\
-\6-6,4-6\n\
-\2-6,4-8"
+-- Getting the text files for interactive ghci usage...
+unsafeReadFile = unsafePerformIO . readFile 
+
 
 -- https://github.com/JakeWheat/intro_to_parsing/blob/master/VerySimpleExpressions.lhs
 
@@ -38,15 +37,15 @@ num = do
 data Range = Range Int Int
     deriving (Eq, Show)
 
-data Pair = Pair [Range]
-    deriving (Eq, Show)
-
 range :: Parser Range
 range = do
     min <- num
     string "-"
     max <- num
     return $ Range min max
+
+data Pair = Pair [Range]
+    deriving (Eq, Show)
 
 pair :: Parser Pair
 pair = do
@@ -72,11 +71,6 @@ partialOverlap :: Pair -> Int
 partialOverlap (Pair rs) = 
     let [s1, s2] = map idSetFromRange rs
     in if null (s1 `intersection` s2) then 0 else 1
-
-
--- let x = regularParse pairList testInput
--- map fullOverlap <$> x
--- sum <$> map fullOverlap <$> x
 
 
 sumFullOverlaps :: String -> Either ParseError Int
