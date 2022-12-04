@@ -1,4 +1,4 @@
-module MyLib (sumOverlaps) where
+module MyLib (sumFullOverlaps, sumPartialOverlaps) where
 
 import Text.Parsec.String (Parser)
 import Text.Parsec.Token (integer)
@@ -59,16 +59,25 @@ pairList = pair `sepBy` endOfLine >>= \ps -> eof >> return ps
 idSetFromRange :: Range -> Set.Set Int
 idSetFromRange (Range from to) = Set.fromList $ enumFromTo from to
 
-overlap :: Pair -> Int
-overlap (Pair rs) = 
+fullOverlap :: Pair -> Int
+fullOverlap (Pair rs) = 
     let [s1, s2] = map idSetFromRange rs
     in
         if (s1 `isSubsetOf` s2) || (s2 `isSubsetOf` s1) then 1 else 0
 
+partialOverlap :: Pair -> Int
+partialOverlap (Pair rs) = 
+    let [s1, s2] = map idSetFromRange rs
+    in if null (s1 `intersection` s2) then 0 else 1
+
+
 -- let x = regularParse pairList testInput
--- map overlap <$> x
--- sum <$> map overlap <$> x
+-- map fullOverlap <$> x
+-- sum <$> map fullOverlap <$> x
 
 
-sumOverlaps :: String -> Either ParseError Int
-sumOverlaps s = sum <$> map overlap <$> regularParse pairList s
+sumFullOverlaps :: String -> Either ParseError Int
+sumFullOverlaps s = sum <$> map fullOverlap <$> regularParse pairList s
+
+sumPartialOverlaps :: String -> Either ParseError Int
+sumPartialOverlaps s = sum <$> map partialOverlap <$> regularParse pairList s
