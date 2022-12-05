@@ -1,4 +1,4 @@
-module MyLib (answer) where
+module MyLib (answer, answer2) where
 
 import DataStructures
 import Parsers
@@ -62,3 +62,25 @@ answer x = do
     top <$> sm
 
 
+--- part 2
+
+move2 :: Instruction -> StackMap -> Maybe StackMap
+move2 (Move n fromCol toCol) sm = do
+    moved <- take n <$> IntMap.lookup fromCol sm
+    --trace (show moved) (Just 1)
+    let sm' = IntMap.adjust (drop n) fromCol sm
+    return $ IntMap.adjust (moved ++) toCol sm'
+
+runSheet2 :: Sheet -> Maybe StackMap
+runSheet2 (Sheet arr moves) =
+    let sm = constructStacks arr
+    in
+        foldM (flip move2) sm moves
+
+answer2 :: String -> Maybe String
+answer2 x = do
+    let s = case regularParse sheet x of
+                Right s  -> s
+                Left err -> error $ show err
+    let sm = runSheet2 s
+    top <$> sm
