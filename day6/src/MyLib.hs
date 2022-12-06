@@ -13,6 +13,7 @@ tests = [ "mjqjpqmgbljsphdztnvjfqwrcgsmlb"
         , "zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw"]
 
 
+varCheck :: Int -> Int -> String -> Int
 varCheck codeLength pos msg = 
     let 
         s = Set.fromList $ take codeLength msg
