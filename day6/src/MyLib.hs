@@ -1,4 +1,4 @@
-module MyLib (findMarker) where
+module MyLib (findMarker, findMarker2) where
 
 import Data.Set (Set)
 import qualified Data.Set as Set
@@ -12,15 +12,17 @@ tests = [ "mjqjpqmgbljsphdztnvjfqwrcgsmlb"
         , "nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg"
         , "zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw"]
 
-cursor = zip [1..]
 
-check l@((_, a):(_, b):(_, c):(n, d):_) = 
-    let s = Set.fromList [a,b,c,d]
-    in
---        if length (trace ((show n) ++ " " ++ (show s)) s) == 4 then n else check (drop 1 l)
-        if length s == 4 then n else check (drop 1 l)
-
-examples = map check $ map cursor tests
+varCheck codeLength pos msg = 
+    let 
+        s = Set.fromList $ take codeLength msg
+    in 
+        if length s == codeLength 
+            then pos + codeLength
+            else varCheck codeLength (pos + 1) (drop 1 msg)
 
 findMarker :: String -> Int
-findMarker = check . cursor
+findMarker = varCheck 4 0
+
+findMarker2 :: String -> Int
+findMarker2 = varCheck 14 0
