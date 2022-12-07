@@ -9,3 +9,5 @@ haskell-project/
 *.cache
 *.conf
 */dist-newstyle/
+day7/src/MyLib Kopie.hs
+day7/src/MyLib_old.hs
