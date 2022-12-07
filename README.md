@@ -3,7 +3,7 @@
 https://adventofcode.com/2022
 
 
-# Topic covered
+# Topics covered
 
 * Day 1: Lists
 * Day 2: Rings, Modulo
