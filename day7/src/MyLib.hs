@@ -3,7 +3,7 @@ module MyLib (part1, part2) where
 import Parsers
 import DataTypes
 
-import Data.List (intercalate)
+import Data.List (intercalate, sort)
 
 import Debug.Trace
 
@@ -138,7 +138,16 @@ part1 :: String -> DataSize
 part1 s = sum $ filter (<= 100000) $ allFolders dataSize $ build s
 
 part2 :: String -> DataSize
-part2 s = sum $ filter (<= 100000) $ allFolders dataSize $ build s
+part2 s = 
+    let fs = build s
+        sizes = allFolders dataSize fs
+        usedSize = head $ sizes
+        freeSize = 70000000 - usedSize
+        missing = 30000000 - freeSize
+    in head $ sort $ filter (>= missing) sizes
+    
+
+
 
 
 --data SizedFolder = SizedFolder Name [SizedFolder] DataSize deriving (Show)
