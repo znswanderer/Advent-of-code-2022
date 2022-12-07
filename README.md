@@ -11,4 +11,4 @@ https://adventofcode.com/2022
 * Day 4: Parsec, Sets
 * Day 5: Parsec, IntMap, Stacks
 * Day 6: Sets
-* Day 7: Headaches, Trees, Parsec, FileSystem, Zippers
+* Day 7: Headaches, Trees, Parsec, FileSystem, Zippers (better solution: https://github.com/venanzio/AoC/blob/main/2022/day07.hs)
