@@ -5,7 +5,7 @@ https://adventofcode.com/2022
 
 # Topics covered
 
-* Day 1: *Calorie Counting;* Lists*
+* Day 1: *Calorie Counting;* Lists
 * Day 2: *Rock Paper Scissors;* Rings, Modulo
 * Day 3: *Rucksack Reorganization;* Sets
 * Day 4: *Camp Cleanup;* Parsec, Sets
