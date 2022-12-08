@@ -60,27 +60,9 @@ check g x y =
 
 r0 = [3, 0, 3, 7, 3]
 
--- splitAt :: Int -> [a] -> ([a], [a]) 
 
 {-
-n = 2
-cur = r0 !! n
-(pre, aft) = splitAt n r0
-comp = map (\x -> if x > cur then 1 else 0) 
-pre' = comp pre
-aft' = comp aft
--}
-
-{-
-    "runner xs" will calculate for each position in the list xs
-    how many of the Int values of a given position are larger
-    than the current position.
-
-    eg. runner [2,5,5,1,2] = [0,0,0,4,0]
-
-    The first and the last index a spared from comparison.
-    The value "4" for the list value "1" is because 4 entries
-    are larger than 1.
+    eg. runner [2,5,5,1,2] = [True,True,True,False,True]
 -}
 runner xs = True:(runner' (take 1 xs) (drop 1 xs))
 
@@ -93,8 +75,6 @@ runner' pre (cur:aft) = vis:(runner' (pre ++ [cur]) aft)
     aft' = comp aft
     vis  = (sum pre' == 0) || (sum aft' == 0)
 
--- Is a given position visible?
---visible xs = map (\x -> if x > 0 then 0 else 1) $ runner xs
 
 visibleByRows :: Grid Int -> Grid Bool
 visibleByRows = map runner
@@ -119,25 +99,7 @@ visibleByBoth :: Grid Int -> Grid Bool
 visibleByBoth g =  
         calcOnGrids (||) (visibleByRows g) (visibleByColumns g)
 
-{-
 
-visibleOneWay :: Grid Int -> Grid Int
-visibleOneWay g =  
-    let 
-        f x y = if x + y > 0 then 1 else 0
-    in
-        calcOnGrids f (visibleByRows g) (visibleByColumns g)
-
-{-
-visibleByBoth :: Grid Int -> Grid Int
-visibleByBoth g = 
-    let 
-        f x y = if x + y == 2 then 1 else 0
-    in
-        map (\(x,y) -> onTwo f x y) $ zip (visibleByRows g) (visibleByColumns g)
--}
-
--}
 
 -- Can be done better
 inner xs = 
