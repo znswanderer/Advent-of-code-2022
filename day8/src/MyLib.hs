@@ -89,8 +89,8 @@ visibleByColumns = transpose . map runner . transpose
 onTwo _ [] []         = []
 onTwo f (x:xs) (y:ys) = (f x y):(onTwo f xs ys)
 
---map (\(x,y) -> onTwo (+) x y) $ zip testGrid testGrid
 
+-- maybe zipWith :: (a -> b -> c) -> [a] -> [b] -> [c] ?
 calcOnGrids :: (a -> b -> c) -> Grid a -> Grid b -> Grid c
 calcOnGrids f ga gb = map (\(x,y) -> onTwo f x y) $ zip ga gb
 
