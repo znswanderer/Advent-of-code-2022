@@ -12,3 +12,6 @@ haskell-project/
 day7/src/MyLib Kopie.hs
 day7/src/MyLib_old.hs
 testProj/
+*.log
+.vscode/launch.json
+.vscode/tasks.json
