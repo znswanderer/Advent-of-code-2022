@@ -16,10 +16,12 @@ data Move = MUp | MDown | MRight | MLeft
 buildMoves :: String -> [Move]
 buildMoves = concat . map buildMoves' . lines
   where
-    buildMoves' ('R':s) = replicate (read s) MRight
-    buildMoves' ('L':s) = replicate (read s) MLeft
-    buildMoves' ('U':s) = replicate (read s) MUp
-    buildMoves' ('D':s) = replicate (read s) MDown
+    buildMoves' (c:s) = replicate (read s) (moveFromChar c)
+    moveFromChar 'R' = MRight
+    moveFromChar 'L' = MLeft
+    moveFromChar 'U' = MUp
+    moveFromChar 'D' = MDown
+
 
 
 movePos :: Pos -> Move -> Pos
@@ -46,7 +48,7 @@ moveRope :: Rope -> Move -> Rope
 moveRope (p:ps) mv = 
     reverse $ foldl' (\hs p -> (follow (head hs) p):hs) [movePos p mv] ps
 
-makeMoves :: (a -> Move -> a) -> a -> [Move] -> [a]
+makeMoves :: (Rope -> Move -> Rope) -> Rope -> [Move] -> [Rope]
 makeMoves = scanl'
 
 numVisited :: Rope -> [Move] -> Int
