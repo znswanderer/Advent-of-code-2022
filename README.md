@@ -13,3 +13,4 @@ https://adventofcode.com/2022
 * Day 6: *Tuning Trouble;* Sets
 * Day 7: *No Space Left On Device;* Headaches, Trees, Parsec, FileSystem, Zippers (better solution: https://github.com/venanzio/AoC/blob/main/2022/day07.hs)
 * Day 8: *Treetop Tree House;* Grid
+* Day 9: *Rope Bridge;* Lists, Cons, foldl', scanl'

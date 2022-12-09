@@ -1,8 +1,9 @@
 module MyLib (part1, part2) where
 
 import Data.Traversable (mapAccumL)
-import Data.Set (Set)
 import qualified Data.Set as Set
+import Data.Foldable (foldl')
+import Data.List (scanl')
 
 type Pos = (Int, Int)
 
@@ -15,23 +16,27 @@ data Move = MUp | MDown | MRight | MLeft
     deriving (Eq, Show)
 
 moveHead :: Rope -> Move -> Rope
-moveHead (Rope (x, y) t) m = moveHead' m
-  where
-    moveHead' MUp    = Rope (x, y+1) t
-    moveHead' MDown  = Rope (x, y-1) t
-    moveHead' MRight = Rope (x+1, y) t
-    moveHead' MLeft  = Rope (x-1, y) t
+moveHead (Rope h t) m = Rope (movePos h m) t
+
+movePos :: Pos -> Move -> Pos
+movePos (x, y) MUp    = (x, y+1)
+movePos (x, y) MDown  = (x, y-1)
+movePos (x, y) MRight = (x+1, y)
+movePos (x, y) MLeft  = (x-1, y)
+
 
 moveTail :: Rope -> Rope
-moveTail r@(Rope h@(hx, hy) (tx, ty)) =
+moveTail (Rope h t) = Rope h (follow h t)
+
+follow :: Pos -> Pos -> Pos
+follow (hx, hy) t@(tx, ty) =
     let dx = hx - tx
         dy = hy - ty
     in
         if abs dx > 1 || abs dy > 1 then
-            -- I like to move it
-            Rope h (tx + pmOne dx, ty + pmOne dy)
+            (tx + pmOne dx, ty + pmOne dy)
         else
-            r
+            t
 
 pmOne :: Int -> Int
 pmOne = (max (-1)) . (min 1) 
@@ -48,16 +53,11 @@ mdown n = replicate n MDown
 example = concat [mright 4, mup 4, mleft 3, mdown 1, mright 4, mdown 1, mleft 5, mright 2]
 
 
--- mapAccumL :: forall t s a b. Traversable t => (s -> a -> (s, b)) -> s -> t a -> (s, t b) 
--- I still have problems writng point free with more than one argument
-makeMoves :: Rope -> [Move] -> [Rope]
-makeMoves rp mvs = snd $ makeMoves' rp mvs
-  where
-    runner r mv = (\x -> (x, x)) $ (moveRope r mv)
-    makeMoves'  = mapAccumL runner 
+makeMoves :: (a -> Move -> a) -> a -> [Move] -> [a]
+makeMoves = scanl'
 
 numVisited :: [Move] -> Int
-numVisited = length . Set.fromList  . (map tailPos) . (makeMoves start)
+numVisited = length . Set.fromList  . (map tailPos) . (makeMoves moveRope start)
 
 
 buildMoves :: String -> [Move]
@@ -71,4 +71,18 @@ buildMoves = concat . map buildMoves' . lines
 
 part1 = numVisited . buildMoves
 
-part2 = part1
+-- ---------------- PART 2 -------------------
+
+type LongRope = [Pos]
+
+-- foldl' :: (b -> a -> b) -> b -> t a -> b 
+moveLongRope :: LongRope -> Move -> LongRope
+moveLongRope (p:ps) mv = 
+    reverse $ foldl' (\hs p -> (follow (head hs) p):hs) [movePos p mv] ps
+
+longStart = replicate 10 (0,0)
+
+numVisitedLong :: [Move] -> Int
+numVisitedLong = length . Set.fromList  . (map (head . reverse)) . (makeMoves moveLongRope longStart)
+
+part2 = numVisitedLong . buildMoves
