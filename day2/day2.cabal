@@ -29,7 +29,7 @@ library
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
-    build-depends:    base ^>=4.16.4.0
+    build-depends:    base ^>=4.17.0.0
     hs-source-dirs:   src
     default-language: Haskell2010
 
@@ -42,7 +42,7 @@ executable day2
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
     build-depends:
-        base ^>=4.16.4.0,
+        base ^>=4.17.0.0,
         day2
 
     hs-source-dirs:   app

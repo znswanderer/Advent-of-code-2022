@@ -29,7 +29,7 @@ library
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
-    build-depends:    base ^>=4.16.4.0
+    build-depends:    base ^>=4.17.0.0
                     , containers
                     , split
     hs-source-dirs:   src
@@ -44,7 +44,7 @@ executable day3
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
     build-depends:
-        base ^>=4.16.4.0,
+        base ^>=4.17.0.0,
         day3
 
     hs-source-dirs:   app
