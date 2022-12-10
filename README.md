@@ -14,3 +14,4 @@ https://adventofcode.com/2022
 * Day 7: *No Space Left On Device;* 😵‍💫 Headaches, Trees, Parsec, FileSystem, Zippers (better solution: https://github.com/venanzio/AoC/blob/main/2022/day07.hs)
 * Day 8: *Treetop Tree House;* Grid
 * Day 9: *Rope Bridge;* ❤️ Lists, Cons, foldl', scanl'
+* Day 10: *Day 10: Cathode-Ray Tube;* State Machine ?
