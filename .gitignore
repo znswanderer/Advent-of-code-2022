@@ -15,3 +15,6 @@ testProj/
 *.log
 .vscode/launch.json
 .vscode/tasks.json
+proj_template/
+day10/src/MyLib Kopie 2.hs
+day10/src/MyLib Kopie.hs
