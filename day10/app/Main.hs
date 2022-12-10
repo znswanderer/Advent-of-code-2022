@@ -9,8 +9,8 @@ main = getArgs >>= parse
 
 parse ["--part1", path] = do
   input <- readFile path
-  putStrLn $ show $ MyLib.part1 input
+  putStrLn $ MyLib.part1 input
 
 parse ["--part2", path] = do
   input <- readFile path
-  putStrLn $ show $ MyLib.part2 input
+  putStrLn $ MyLib.part2 input
