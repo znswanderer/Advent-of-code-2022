@@ -15,4 +15,4 @@ https://adventofcode.com/2022
 * Day 8: *Treetop Tree House;* Grid
 * Day 9: *Rope Bridge;* ❤️ Lists, Cons, foldl', scanl'
 * Day 10: *Day 10: Cathode-Ray Tube;* State Machine ?
-* Day 11: *Monkey in the Middle;* Parsec, IntMap, State Monad(?), Mod, Prime Numbers, Algebra
+* Day 11: *Monkey in the Middle;* Parsec, IntMap, State Monad(?), Mod, Prime Numbers, Algebra (https://en.wikipedia.org/wiki/Finite_field)
