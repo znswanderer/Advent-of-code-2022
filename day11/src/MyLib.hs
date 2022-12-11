@@ -25,7 +25,7 @@ num = do
     n <- many1 digit
     return (read n)
 
-type WorryLevel = Int
+type WorryLevel = Integer
 type MonkeyNumber = Int
 type Inspected = Int
 
@@ -64,12 +64,13 @@ monkey = do
 
     t <- test
 
-    return $ Monkey n xs op t 0
+    return $ Monkey n (map toInteger xs) op t 0
+
 
 data Operation = Operation OpVal Char OpVal
     deriving (Eq, Show)
 
-data OpVal = OldVal | NumVal Int
+data OpVal = OldVal | NumVal Integer
     deriving (Eq, Show)
 
 operation :: Parser Operation
@@ -83,13 +84,13 @@ operation = do
     return $ Operation x op y
   where
     oldVal = string "old" >> return OldVal
-    numVal = num >>= (return . NumVal)
+    numVal = num >>= (return . NumVal . toInteger)
 
 
 data Test = Test Pred IfThen
     deriving (Eq, Show)
 
-data Pred = DivBy Int 
+data Pred = DivBy Integer
     deriving (Eq, Show)
 
 data IfThen = IfThen Command Command
@@ -118,7 +119,7 @@ ifThen = do
 predicate :: Parser Pred
 predicate = do
     string "divisible by "
-    num >>= return . DivBy
+    num >>= return . DivBy . toInteger
 
 command :: Parser Command
 command = do
@@ -156,7 +157,7 @@ takeAction crew (wl, ThrowToMonkey n) =
         IntMap.insert n m' crew
 
 
-val :: OpVal -> (WorryLevel -> Int)
+val :: OpVal -> (WorryLevel -> WorryLevel)
 val (OldVal)   = id
 val (NumVal n) = const n
 
@@ -186,4 +187,35 @@ part1 s =
     in
         x*y
 
-part2 = const "part2"
+-------------- PART 2
+
+monkeyBusiness2 crew n =
+    let
+        Monkey mn wls op tst i = (IntMap.!) crew n
+        -- for better performance (if needed) modValue should only calculated once
+        modValue               = 
+            foldl' (*) 1 $ map (\(Monkey _ _ _ (Test (DivBy n) _)  _) -> n) $ IntMap.elems crew
+        i'                     = i + length wls
+        wls'                   = map (runOperation op) wls
+        wls''                  = map (\x -> x `mod` modValue) wls'
+        acts                   = map (decideAction tst) wls''
+        crew'                  = foldl' takeAction crew acts
+    in
+        IntMap.insert n (Monkey mn [] op tst i') crew'
+
+runCrew2 :: MonkeyCrew -> MonkeyCrew
+runCrew2 crew = (foldl' monkeyBusiness2 crew (IntMap.keys crew))
+
+runCrewNTimes2 :: Int -> MonkeyCrew -> MonkeyCrew
+runCrewNTimes2 n = nTimes n runCrew2
+
+inspectedAfterRounds2 :: Int -> MonkeyCrew -> [Inspected]
+inspectedAfterRounds2 n crew = map inspected $ IntMap.elems $ runCrewNTimes2 n crew
+
+------------------
+
+part2 s = 
+    let 
+        (x:y:_) = reverse $ sort $ inspectedAfterRounds2 10000 $ readMonkeyMap s
+    in
+        x*y
