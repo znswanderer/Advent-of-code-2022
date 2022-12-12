@@ -2,11 +2,11 @@ module MyLib (part1, part2) where
 
 import qualified Data.Map.Strict as Map
 
-import Data.List (foldl', find, replicate)
+import Data.List (foldl', find, replicate, sort)
 import Data.List.Extra (firstJust)
 import Data.Char (ord)
 import Control.Monad ( guard, (<=<) ) 
-import Data.Maybe (fromJust)
+import Data.Maybe (fromJust, catMaybes)
 
 import Data.Set (Set)
 import qualified Data.Set as Set
@@ -16,6 +16,10 @@ import qualified Control.Monad.Trans.State.Strict as State
 import Control.Monad.ListT (ListT)
 import Data.Functor.Identity (Identity(..))
 -}
+
+import System.IO.Unsafe (unsafePerformIO)
+-- Getting the text files for interactive ghci usage...
+unsafeReadFile = unsafePerformIO . readFile 
 
 exStr = "Sabqponm\n\
 \abcryxxl\n\
@@ -95,8 +99,8 @@ singleStep m path@(p:ps) = do
 -- type PathList a = ListT Identity a
 
 
-singleStepPM :: HeightMap -> DistanceMap -> Path -> [Path]
-singleStepPM m dm path@(p:ps) = do
+singleStepPM :: Int -> HeightMap -> DistanceMap -> Path -> [Path]
+singleStepPM maxLength m dm path@(p:ps) = do
     let (x, y) = p
     let h = heightAtPos m p
     p' <- [(x+1, y), (x-1, y), (x, y+1), (x, y-1)]
@@ -106,6 +110,7 @@ singleStepPM m dm path@(p:ps) = do
     guard (h' - h <= 1)
     -- pruning: Already a shorter path to new postion?
     let path' = p':path
+    guard (length path' <= maxLength + 1)
     case Map.lookup p' dm of
         -- ATTENTION: return [] is NOT []!
         Just path'' -> if length path'' <= length path' then [] else return path'
@@ -122,10 +127,10 @@ insertPathList dm ps = foldl' (\m p -> Map.insert (head p) p m) dm ps
 
 type Travel = (DistanceMap, [Path])
 
-completeStep :: HeightMap -> Travel -> Travel
-completeStep hm (dm, ps) =
+completeStep :: Int -> HeightMap -> Travel -> Travel
+completeStep maxLength hm (dm, ps) =
     let
-        ps'  = ps >>= singleStepPM hm dm
+        ps'  = ps >>= singleStepPM maxLength hm dm
         ps'' = pruneTree ps'
         dm'  = insertPathList dm ps''
     in
@@ -133,17 +138,21 @@ completeStep hm (dm, ps) =
 
 
 
-findSolution :: HeightMap -> Travel -> Path
-findSolution hm tv@(dm, ps) = 
+findSolution :: Int -> HeightMap -> Travel -> Maybe Path
+findSolution maxLength hm tv@(dm, ps) = 
     let
         end = endPos hm
     in 
-        case Map.lookup end dm of
-            Just sol -> sol
-            Nothing  -> findSolution hm $ completeStep hm tv
+        if ps == [] then Nothing
+        else
+            if (length $ head ps) >= maxLength + 1 then Nothing 
+            else
+                case Map.lookup end dm of
+                    Just sol -> Just sol
+                    Nothing  -> findSolution maxLength hm $ completeStep maxLength hm tv
 
-travel :: HeightMap -> Travel -> [Travel]
-travel m tv = (completeStep m tv):[tv]
+-- travel :: HeightMap -> Travel -> [Travel]
+-- travel m tv = (completeStep m tv):[tv]
 
 
 -- breadth first list monad?
@@ -184,8 +193,37 @@ part1 s =
     let 
         m    = makeMap s
         tv   = (Map.empty, [[startPos m]]) :: Travel
-        path = findSolution m tv
-    in
-        "Found path of length " ++ (show ((length path) - 1)) ++ " path: " ++ (show $ reverse path)
+    in case findSolution 1000 m tv of 
+        Just path ->
+                    "Found path of length " ++ (show ((length path) - 1)) ++ " path: " ++ (show $ reverse path)
+        Nothing -> "no solution found"
 
-part2 = const "part2"
+
+--- part 2
+
+allZeroPositions :: HeightMap -> [Pos]
+allZeroPositions m = map (\(p, _) -> p) $ filter (\(pos, h) -> h == 0)  $ map (\(k, v) -> (k, height v)) $ Map.toList m
+
+
+trails :: HeightMap -> [Maybe Path]
+trails m = 
+    next (length $ Map.keys m) (allZeroPositions m)
+
+  where
+    next maxL (s:[]) = [findSolution maxL m (Map.empty, [[s]])]
+    next maxL (s:ss) = case findSolution maxL m (Map.empty, [[s]]) of
+        Just path -> (Just path):(next (min (maxL) (length path)) ss)
+        Nothing   -> Nothing:(next maxL ss)
+
+
+part2 s = 
+    let 
+        m         = makeMap s
+        trs       = catMaybes $ trails m
+        numTrails = map (\x -> (length x) -1) trs
+        shortest  = head $ sort $ numTrails
+    in
+        "Found " ++ (show $ length trs) ++ " paths. The shortest has length " ++ (show shortest)
+
+
+
