@@ -16,4 +16,4 @@ https://adventofcode.com/2022
 * Day 9: *Rope Bridge;* ❤️ Lists, Cons, foldl', scanl'
 * Day 10: *Day 10: Cathode-Ray Tube;* State Machine ?
 * Day 11: *Monkey in the Middle;* Parsec, IntMap, State Monad(?), Mod, Prime Numbers, Algebra (https://en.wikipedia.org/wiki/Finite_field)
-* Day 12: *Hill Climbing Algorithm;* 😵‍💫 A* Algorithm?, search, pruning, List monad
+* Day 12: *Hill Climbing Algorithm;* 😵‍💫 A* Algorithm?, search, pruning, List monad (better solution: https://github.com/david-crespo/aoc/blob/main/2022/hs-aoc/src/Day12.hs)
