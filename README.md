@@ -5,15 +5,16 @@ https://adventofcode.com/2022
 
 # Topics covered
 
-* Day 1: *Calorie Counting;* Lists
-* Day 2: *Rock Paper Scissors;* Rings, Modulo
-* Day 3: *Rucksack Reorganization;* Sets
-* Day 4: *Camp Cleanup;* Parsec, Sets
-* Day 5: *Supply Stacks;* Parsec, IntMap, Stacks
-* Day 6: *Tuning Trouble;* Sets
-* Day 7: *No Space Left On Device;* 😵‍💫 Headaches, Trees, Parsec, FileSystem, Zippers (better solution: https://github.com/venanzio/AoC/blob/main/2022/day07.hs)
-* Day 8: *Treetop Tree House;* Grid
-* Day 9: *Rope Bridge;* ❤️ Lists, Cons, foldl', scanl'
-* Day 10: *Day 10: Cathode-Ray Tube;* State Machine ?
-* Day 11: *Monkey in the Middle;* Parsec, IntMap, State Monad(?), Mod, Prime Numbers, Algebra (https://en.wikipedia.org/wiki/Finite_field)
-* Day 12: *Hill Climbing Algorithm;* 😵‍💫 A* Algorithm?, search, pruning, List monad (better solution: https://github.com/david-crespo/aoc/blob/main/2022/hs-aoc/src/Day12.hs)
+* Day 1: *Calorie Counting;* **Haskell**, Lists
+* Day 2: *Rock Paper Scissors;* **Haskell**, Rings, Modulo
+* Day 3: *Rucksack Reorganization;* **Haskell**, Sets
+* Day 4: *Camp Cleanup;* **Haskell**, Parsec, Sets
+* Day 5: *Supply Stacks;* **Haskell**, Parsec, IntMap, Stacks
+* Day 6: *Tuning Trouble;* **Haskell**, Sets
+* Day 7: *No Space Left On Device;* **Haskell**, 😵‍💫 Headaches, Trees, Parsec, FileSystem, Zippers (better solution: https://github.com/venanzio/AoC/blob/main/2022/day07.hs)
+* Day 8: *Treetop Tree House;* **Haskell**, Grid
+* Day 9: *Rope Bridge;* **Haskell**, ❤️ Lists, Cons, foldl', scanl'
+* Day 10: *Day 10: Cathode-Ray Tube;* **Haskell**, State Machine ?
+* Day 11: *Monkey in the Middle;* **Haskell**, Parsec, IntMap, State Monad(?), Mod, Prime Numbers, Algebra (https://en.wikipedia.org/wiki/Finite_field)
+* Day 12: *Hill Climbing Algorithm;* **Haskell**, 😵‍💫 A* Algorithm?, search, pruning, List monad (better solution: https://github.com/david-crespo/aoc/blob/main/2022/hs-aoc/src/Day12.hs)
+* Day 13: *Distress Signal;* **Python**, The structure for the comparision might be a tree? Don't care, solved it in a *dirty way* in python!
