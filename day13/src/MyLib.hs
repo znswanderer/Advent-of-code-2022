@@ -1,5 +1,7 @@
 module MyLib (part1, part2) where
 
+import Data.List (sort, elemIndex)
+
 import Text.Parsec.String (Parser)
 import Text.Parsec.Char (anyChar, string, char, digit, oneOf, endOfLine, letter, spaces, alphaNum, noneOf, satisfy)
 import Text.Parsec.Combinator (many1, sepBy1, endBy, lookAhead, sepBy)
@@ -18,21 +20,23 @@ num = do
     return (read n)
 
 
-data EMsg = EInt Int | EList [EMsg]
+data EMsg = I Int | L [EMsg]
     deriving (Eq, Show)
 
-x = [EInt 1, EInt 2, EList [EInt 2, EInt 3]]
+-- Unfortunately, the derivation of Ord does not yield the correct result,
+-- so we have to construct the Ord instance ourselves
 
-elfie :: EMsg -> EMsg -> Ordering
-elfie (EInt l)        (EInt r)       = compare l r
-elfie (EList [])      (EList [])     = EQ
-elfie (EList [])      (EList _)      = LT
-elfie (EList _)       (EList [])     = GT
-elfie (EList (l:ls))  (EList (r:rs)) = 
-    let pos1 = elfie l r
-    in if pos1 == EQ then elfie (EList ls) (EList rs) else pos1
-elfie (EInt l)        r@(EList _)    = elfie (EList [EInt l]) r
-elfie l@(EList _)     (EInt r)       = elfie l (EList [EInt r])
+
+instance Ord EMsg where
+    compare (I l)      (I r)      = compare l r
+    compare (L [])     (L [])     = EQ
+    compare (L [])     (L _)      = LT
+    compare (L _)      (L [])     = GT
+    compare (L (l:ls)) (L (r:rs)) = 
+        let pos1 = compare l r
+        in if pos1 == EQ then compare (L ls) (L rs) else pos1
+    compare (I l)    r@(L _)      = compare (L [I l]) r
+    compare l@(L _)    (I r)      = compare l         (L [I r])
 
 eVal :: Parser EMsg
 eVal = eInt <|> eList
@@ -40,36 +44,38 @@ eVal = eInt <|> eList
 eInt :: Parser EMsg
 eInt = do
     n <- num
-    return $ EInt n
+    return $ I n
 
 eList :: Parser EMsg
 eList = do
     char '['
     vals <- sepBy eVal (char ',')
     char ']'
-    return $ EList vals
+    return $ L vals
 
-eCompare :: String -> String -> Ordering
-eCompare l r = 
-    let 
-        Right l' = regularParse eList l
-        Right r' = regularParse eList r
-    in
-        elfie l' r'
-
-readEList :: Parser [EMsg]
-readEList = sepBy eList spaces
+readL :: Parser [EMsg]
+readL = sepBy eList spaces
 
 runList :: [EMsg] -> [Ordering]
 runList [] = []
-runList (l:r:xs) = (elfie l r):runList xs
+runList (l:r:xs) = (compare l r):runList xs
 
 
 allValidIndices :: [EMsg] -> [Int]
 allValidIndices xs = map fst $ filter (\(n, x) -> x == LT) $ zip [1..] $ runList xs
 
+part1 :: [Char] -> Int
 part1 s = 
-    let Right xs = regularParse readEList s
+    let Right xs = regularParse readL s
     in sum $ allValidIndices xs
 
-part2 = const "part2"
+part2 :: [Char] -> Int
+part2 s = 
+    let 
+        Right xs = regularParse readL s
+        Right ys = regularParse readL "[[2]]\n[[6]]"
+        xs' = xs ++ ys
+        xs'' = sort xs'
+        [Just a, Just b] = map ((flip elemIndex) xs'') ys
+    in 
+        (a+1) * (b+1)

@@ -17,4 +17,4 @@ https://adventofcode.com/2022
 * Day 10: *Day 10: Cathode-Ray Tube;* **Haskell**, State Machine ?
 * Day 11: *Monkey in the Middle;* **Haskell**, Parsec, IntMap, State Monad(?), Mod, Prime Numbers, Algebra (https://en.wikipedia.org/wiki/Finite_field)
 * Day 12: *Hill Climbing Algorithm;* **Haskell**, 😵‍💫 A* Algorithm?, search, pruning, List monad (better solution: https://github.com/david-crespo/aoc/blob/main/2022/hs-aoc/src/Day12.hs)
-* Day 13: *Distress Signal;* **Python**, The structure for the comparision might be a tree? Don't care, solved it in a *dirty way* in python!
+* Day 13: *Distress Signal;* **Python** and **Haskell** The structure for the comparision might be a tree? Don't care, solved it in a *dirty way* in python! Haskell: Ord typeclass
