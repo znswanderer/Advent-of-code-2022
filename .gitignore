@@ -22,3 +22,4 @@ day13/src/.ipynb_checkpoints/book-checkpoint.ipynb
 day13/src/.ipynb_checkpoints/example-checkpoint
 day13/.ipynb_checkpoints/input-checkpoint
 *.ipynb_checkpoints*
+*.DS_Store
