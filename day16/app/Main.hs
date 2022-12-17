@@ -13,4 +13,4 @@ parse ["--part1", path] = do
 
 parse ["--part2", path] = do
   input <- readFile path
-  putStrLn $ MyLib.part2 input
+  putStrLn $ show $ MyLib.part2 input
