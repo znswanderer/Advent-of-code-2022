@@ -1,4 +1,4 @@
-module MyLib (part1, part2) where
+module MyLib (part1) where
 
 import Data.Maybe (fromJust, catMaybes)
 import Data.List.HT (removeEach)
@@ -68,77 +68,89 @@ data Valve = Valve {
 type ClosedValveSet = Set String
 
 
---- PART A
--- find shortest path from valve to valve
+
+
+---------------------------------------------
+
+data Step = Wait | MoveTo ValveName | OpenValve ValveName
+    deriving (Eq, Show, Ord)
+
+
+
+type Time = Int
+type ClosedValves = [ValveName]
+type Position = ValveName
+
+data WorldState = World Time ClosedValves Position Step
+    deriving (Eq, Show, Ord)
+
+instance Hashable WorldState where
+    hashWithSalt n = (hashWithSalt n). show
+
+nextStep :: ValveMap -> WorldState -> H.HashSet WorldState
+nextStep m w@(World t closed pos s) = 
+    let 
+        thisValve = valveForString m pos
+        openValve = if (vRate thisValve > 0) && (pos `elem` closed) then [OpenValve pos] else []
+        moves = map MoveTo $ vExits thisValve
+        steps = [Wait] ++ openValve ++ moves
+    in
+        H.fromList $ map (\s -> runStep w s) steps
+
+runStep :: WorldState -> Step -> WorldState
+runStep (World t closed pos _) Wait            = World (t+1) closed pos Wait
+runStep (World t closed _ _)   (MoveTo newpos) = World (t+1) closed newpos (MoveTo newpos)
+runStep (World t closed pos _) (OpenValve v)   = World (t+1) (filter (not . (==v)) closed) pos (OpenValve v)
+
+time :: WorldState -> Int
+time (World t _ _ _) = t
+
+closed :: WorldState -> ClosedValves
+closed (World _ closed _ _) = closed
+
+step :: WorldState -> Step
+step (World t closed _ s) = s
+
+closedPressure :: ValveMap -> ClosedValves -> Int
+closedPressure m closed = sum $ (map (vRate . (valveForString m)) closed)
+
+startWorld m = World 0 (map vName $ validValves m) startValveName (MoveTo startValveName)
+
+cost :: ValveMap -> WorldState -> WorldState -> Int
+cost m _ end = closedPressure m $ closed end
+
+goal :: WorldState -> Bool
+goal (World t closed _ _) = (t == maxMinute) || (null closed)
+
+solutionValue :: ValveMap -> [WorldState] -> Int
+solutionValue m ws =
+    sum $ map (uncurry (*)) $ solutionValue' m ws
+  where 
+    solutionValue' m ws = map (\w -> (maxMinute - time w, openedPressure $ step w)) ws
+    openedPressure (OpenValve vn) = vRate $ valveForString m vn
+    openedPressure _              = 0
+
+
 
 valveForString :: ValveMap -> ValveName -> Valve
 valveForString m s = fromJust $ Map.lookup s m
 
-neighbours :: ValveMap -> ValveName -> H.HashSet ValveName
-neighbours m vn = H.fromList $ vExits (valveForString m vn)
-
--- https://github.com/david-crespo/aoc/blob/main/2022/hs-aoc/src/Day12.hs
-getPath :: ValveMap -> ValveName -> ValveName -> [ValveName]
-getPath m start end = fromJust $ aStar (neighbours m) (\_ _ -> 1) (\_ -> 0) (== end) start
-
-distance :: ValveMap -> ValveName -> ValveName -> Int
-distance m start end = length $ getPath m start end
-
--- distance map
-
-pairs :: Ord a =>  [a] -> [Set.Set a]
-pairs (x:[]) = []
-pairs (x:xs) = (map (\x' -> Set.fromList [x, x']) xs) ++ (pairs xs)
-
-
 startValveName = "AA"
 
+maxMinute = 30 :: Int
 
-distanceMap :: ValveMap -> Map.Map (Set.Set ValveName) Int
-distanceMap m = 
-    let
-        vps = pairs $ [startValveName] ++ (map vName $ validValves m)
-    in
-        Map.fromList $ map (\p -> (p, dst (Set.toList p))) vps
-    where
-        dst (a:b:[]) = (distance m a b) + 1 -- +1 for opening valve
-
-dst :: Map.Map (Set.Set ValveName) Int -> ValveName -> ValveName -> Int
-dst dm x y = fromJust $ Map.lookup (Set.fromList [x,y]) dm
-
-pathLength dm path = sum $ map (uncurry (dst dm)) $ zip (drop 1 path) path
-
-
--- all possible paths in a given time
-possiblePath :: ValveMap -> (Int, ValveName) -> Int -> [[(Int, ValveName)]]
-possiblePath m start maxTime =
-        suggi dm [start] (startUnivisted m)
-    where
-        dm = distanceMap m
-        startUnivisted m = map vName $ validValves m
-        suggi dm prev unvisited = do
-            (x, xs) <- removeEach unvisited
-            let (t, pos) = head prev
-            let t' = t + dst dm pos x
-            guard (t' <= maxTime)
-            let prev' = (t', x):prev
-            prev':suggi dm prev' xs
-    
-
-pathValue m path = sum $ map (\(t, x) -> (maxMinute -t) * (vRate $ valveForString m x)) path
-
-bestPath m = head $ reverse $ sort $ map (\p -> (pathValue m p, p) ) $ possiblePath m (0, "AA") 30
 
 
 validValves :: ValveMap -> [Valve]
 validValves m = filter (\v -> vRate v > 0) (Map.elems m)
 
-maxMinute = 30 :: Int
 
 part1 s =
     let
         Right m = regularParse parseFile s
+        start = startWorld m
+        Just path = aStar (nextStep m) (cost m) (\x -> 0) goal start
     in
-        show $ bestPath m
+        show $ solutionValue m path
 
-part2 s = "bbb"
+

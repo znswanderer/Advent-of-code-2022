@@ -2,7 +2,8 @@ module Main where
 
 import System.Environment
 
-import qualified MyLib (part1, part2)
+import qualified MyLib (part1)
+import qualified MyLib2 (part2)
 
 main :: IO ()
 main = getArgs >>= parse 
@@ -13,4 +14,4 @@ parse ["--part1", path] = do
 
 parse ["--part2", path] = do
   input <- readFile path
-  putStrLn $ show $ MyLib.part2 input
+  putStrLn $ MyLib2.part2 input
