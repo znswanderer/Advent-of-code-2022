@@ -26,3 +26,4 @@ day13/.ipynb_checkpoints/input-checkpoint
 day16/src/MyLib Kopie.hs
 day16/src/MyLib peng.hs
 day16/src/MyLib2.hs
+*.pyc

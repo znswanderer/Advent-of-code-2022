@@ -2,7 +2,7 @@ module MyLib (part1, part2) where
 
 import Data.Maybe (fromJust, catMaybes)
 import Data.List.HT (removeEach)
-import Data.List (sort, foldl')
+import Data.List (sort, foldl', intercalate)
 import Control.Monad (guard)
 
 import Text.Parsec.String (Parser)
@@ -221,18 +221,21 @@ part1 s =
 -------------------
 -- PART 2
 
+type Actors = Set (Step, Actor)
 
-data WorldState2 = World2 Time ClosedValves Step Step Actor Actor
+data WorldState2 = World2 Time ClosedValves Actors
     deriving (Eq, Show, Ord)
 
 instance Hashable WorldState2 where
     hashWithSalt n = (hashWithSalt n). show
 
+{-
 smallWorld1 :: WorldState2 -> WorldState
 smallWorld1 (World2 t closed s1 s2 a1 a2) = World t closed s1 a1
 
 smallWorld2 :: WorldState2 -> WorldState
 smallWorld2 (World2 t closed s1 s2 a1 a2) = World t closed s2 a2
+-}
 
 
 largeWorld :: WorldState -> WorldState -> WorldState2
@@ -241,26 +244,16 @@ largeWorld w1@(World t1 closed1 s1 a1) w2@(World t2 closed2 s2 a2) =
         closed = Set.toList $ Set.intersection (Set.fromList closed1) (Set.fromList closed2)
     in
         if (t1 == t2) then 
-            World2 t1 closed s1 s2 a1 a2
+            World2 t1 closed (Set.fromList [(s1, a1), (s2, a2)])
         else
             error $ "Times do not match!\n" ++ (show w1) ++ "\n" ++ (show w2)
 
 
 nextStep2 :: ValveMap  -> PathMap -> WorldState2 -> H.HashSet WorldState2
-nextStep2 m pm w@(World2 t closed s1 s2 a1 a2) = 
+nextStep2 m pm w@(World2 t closed actors) = 
     let
-        w1@(World t1 closed1 s1 a1) = smallWorld1 w
-        w2@(World t2 closed2 s2 a2) = smallWorld2 w
+        ((s1, a1):(s2, a2):_) = take 2 $ cycle $ Set.toList actors  -- cycle if both actors are the same
 
-{-
-        closed1' = case target a2 of
-            Nothing           -> closed1
-            Just (Target x _) -> filter (not . (== x)) closed1
-
-        closed2' = case target a1 of
-            Nothing           -> closed2
-            Just (Target x _) -> filter (not . (== x)) closed2
--}
         tg1 = case target a1 of 
             Just (Target x _) -> [x] 
             Nothing           -> []
@@ -268,12 +261,11 @@ nextStep2 m pm w@(World2 t closed s1 s2 a1 a2) =
             Just (Target x _) -> [x] 
             Nothing           -> []
 
-        -- add an inbalance to cut the search tree in half?
-        inbalance = vName $ head $ validValves m
+        w1 = (World t closed s1 a1)
+        w2 = (World t closed s2 a2)
 
-
-        worlds1 = H.toList $! fixNoSteps w1 $ nextStep m pm (inbalance:tg2) (World t1 closed1 s1 a1)
-        worlds2 = H.toList $! fixNoSteps w2 $ nextStep m pm tg1 (World t2 closed2 s2 a2)
+        worlds1 = H.toList $! fixNoSteps w1 $ nextStep m pm tg2 w1
+        worlds2 = H.toList $! fixNoSteps w2 $ nextStep m pm tg1 w2
     
         worlds' = do
             w1 <- worlds1
@@ -300,22 +292,20 @@ nextStep2 m pm w@(World2 t closed s1 s2 a1 a2) =
 
 
 closed2 :: WorldState2 -> ClosedValves
-closed2 (World2 t closed s1 s2 a1 a2) = closed
+closed2 (World2 t closed actors) = closed
     
 cost2 :: ValveMap -> WorldState2 -> WorldState2 -> Int
 cost2 m _ end = closedPressure m $ closed2 end
 
 goal2 :: WorldState2 -> Bool
-goal2 (World2 t closed s1 s2 a1 a2) = (t == maxMinute2) || null closed
+goal2 (World2 t closed actors) = (t == maxMinute2) || null closed
 
-step1 :: WorldState2 -> Step
-step1 (World2 t closed s1 s2 a1 a2) = s1
+steps2 :: WorldState2 -> [Step]
+steps2 (World2 t closed actors) = map (\(s, _) -> s) $ Set.toList actors
 
-step2 :: WorldState2 -> Step
-step2 (World2 t closed s1 s2 a1 a2) = s2
 
 time2 :: WorldState2 -> Int
-time2 (World2 t closed s1 s2 a1 a2) = t
+time2 (World2 t closed actors) = t
 
 heuristic :: ValveMap -> ClosedValves -> Int
 heuristic m closed = 
@@ -331,7 +321,7 @@ solutionValue2 :: ValveMap -> [WorldState2] -> Int
 solutionValue2 m ws =
     sum $ map (uncurry (*)) $ solutionValue' m ws
   where 
-    solutionValue' m ws = map (\w -> (maxMinute2 - time2 w, (openedPressure $ step1 w) + (openedPressure $ step2 w))) ws
+    solutionValue' m ws = map (\w -> (maxMinute2 - time2 w,  sum $ map openedPressure (steps2 w))) ws
     openedPressure (OpenValve vn) = vRate $ valveForString m vn
     openedPressure _              = 0
 
@@ -351,7 +341,7 @@ part2 s =
         pm = distanceMap m
         Just path = aStar (nextStep2 m pm) (cost2 m) ((heuristic m) . closed2 ) goal2 start
     in
-        ((unlines $ map (\w -> (show $ time2 w) ++ " " ++ (show $ closed2 w) ++ "\t" ++ (show $ step1 w) ++ "\t" ++ (show $ step2 w)) path)
+        ((unlines $ map (\w -> (show $ time2 w) ++ " " ++ (show $ closed2 w) ++ "\t" ++ (intercalate ", " $ map show (steps2 w))) path)
         ++ "\n" ++ (show $ solutionValue2 m path))
 
 
