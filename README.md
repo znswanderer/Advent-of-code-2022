@@ -17,8 +17,9 @@ https://adventofcode.com/2022
 * Day 10: *Day 10: Cathode-Ray Tube;* **Haskell**, State Machine ?
 * Day 11: *Monkey in the Middle;* **Haskell**, Parsec, IntMap, State Monad(?), Mod, Prime Numbers, Algebra (https://en.wikipedia.org/wiki/Finite_field)
 * Day 12: *Hill Climbing Algorithm;* **Haskell**, 😵‍💫 A* Algorithm?, search, pruning, List monad (better solution: https://github.com/david-crespo/aoc/blob/main/2022/hs-aoc/src/Day12.hs)
-* Day 13: *Distress Signal;* **Python** and **Haskell** The structure for the comparision might be a tree? Don't care, solved it in a *dirty way* in python! Haskell: Ord typeclass
-* Day 14: *Regolith Reservoir;* **Python** falling sand
-* Day 15: *Beacon Exclusion Zone;* **Python** parser PyPI package, interval subtraction (better solution: https://toot.cafe/@JesseSkinner/109518533398789211)
-* Day 16: *Proboscidea Volcanium;* **Python** (tried in Haskell), managed to keep the heap under control, which can be a problem when using *recursion*
-* Day 17: *Pyroclastic Flow;* **Python** a tetris-like puzzle. To solve part2 we must find repeating states.
+* Day 13: *Distress Signal;* **Python** and **Haskell**, The structure for the comparision might be a tree? Don't care, solved it in a *dirty way* in python! Haskell: Ord typeclass
+* Day 14: *Regolith Reservoir;* **Python**, falling sand
+* Day 15: *Beacon Exclusion Zone;* **Python**, parser PyPI package, interval subtraction (better solution: https://toot.cafe/@JesseSkinner/109518533398789211)
+* Day 16: *Proboscidea Volcanium;* **Python**, (tried in Haskell), managed to keep the heap under control, which can be a problem when using *recursion*
+* Day 17: *Pyroclastic Flow;* **Python**, a tetris-like puzzle. To solve part2 we must find repeating states.
+* Day 18: *Boiling Boulders;* **Python**, Finding holes in 3d blobs. Did it with simulated heat flow.
