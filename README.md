@@ -20,7 +20,7 @@ https://adventofcode.com/2022
 * Day 13: *Distress Signal;* **Python** and **Haskell**, The structure for the comparision might be a tree? Don't care, solved it in a *dirty way* in python! Haskell: Ord typeclass
 * Day 14: *Regolith Reservoir;* **Python**, falling sand
 * Day 15: *Beacon Exclusion Zone;* **Python**, parser PyPI package, interval subtraction (better solution: https://toot.cafe/@JesseSkinner/109518533398789211)
-* Day 16: *Proboscidea Volcanium;* **Python**, (tried in Haskell), managed to keep the heap under control, which can be a problem when using *recursion*
+* Day 16: *Proboscidea Volcanium;* **Python**, (tried in Haskell), managed to keep the heap under control, which can be a problem when using *recursion*. **Day 16 got me off track**
 * Day 17: *Pyroclastic Flow;* **Python**, a tetris-like puzzle. To solve part2 we must find repeating states.
 * Day 18: *Boiling Boulders;* **Python**, Finding holes in 3d blobs. Did it with simulated heat flow.
 * Day 19: *Not Enough Minerals;* **Python**, Decision trees and finding a good approximation for pruning.
