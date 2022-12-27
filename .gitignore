@@ -29,3 +29,4 @@ day16/src/MyLib2.hs
 *.pyc
 python_setup.md
 day16/part1.ipynb
+day20/day20.ipynb
