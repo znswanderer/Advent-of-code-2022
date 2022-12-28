@@ -25,3 +25,4 @@ https://adventofcode.com/2022
 * Day 18: *Boiling Boulders;* **Python**, Finding holes in 3d blobs. Did it with simulated heat flow.
 * Day 19: *Not Enough Minerals;* **Python**, Decision trees and finding a good approximation for pruning.
 * Day 20: *Grove Positioning System;* **Python**, Doubly linked lists, off-by-one mistakes, cutting down by using the `mod` operation.
+* Day 21: *Monkey Math;* **Pyhon** Shoud be solved with a traversable tree? But I used complex numbers.
