@@ -26,3 +26,4 @@ https://adventofcode.com/2022
 * Day 19: *Not Enough Minerals;* **Python**, Decision trees and finding a good approximation for pruning.
 * Day 20: *Grove Positioning System;* **Python**, Doubly linked lists, off-by-one mistakes, cutting down by using the `mod` operation.
 * Day 21: *Monkey Math;* **Pyhon** Shoud be solved with a traversable tree? But I used complex numbers.
+* Day 22: *Monkey Map;* **Python** Not pretty! Hard-wired solution. 3d cube manipulation. So many nasty little bugs.
