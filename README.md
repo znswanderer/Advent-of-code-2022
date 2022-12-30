@@ -27,4 +27,4 @@ https://adventofcode.com/2022
 * Day 20: *Grove Positioning System;* **Python**, Doubly linked lists, off-by-one mistakes, cutting down by using the `mod` operation.
 * Day 21: *Monkey Math;* **Pyhon** Shoud be solved with a traversable tree? But I used complex numbers.
 * Day 22: *Monkey Map;* **Python** Not pretty! Hard-wired solution. 3d cube manipulation. So many nasty little bugs.
-* Day 23: **Unstable Diffusion;** **Python** numpy and scipy. scipy.spatial.distance_matrix. Sub-optimal solution in terms of running time.
+* Day 23: *Unstable Diffusion;* **Python** numpy and scipy. scipy.spatial.distance_matrix. Sub-optimal solution in terms of running time.
